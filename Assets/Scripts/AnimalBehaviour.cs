@@ -28,6 +28,8 @@ public class EnemyController : MonoBehaviour
     }
 
     void Update(){
+        Vector3 lookAwayFromPlayerDirection = transform.position - player.position;
+
         //if the changeTime was reached, calculate a new movement vector
 	    if (Time.time - latestChangeDirectionTime > directionChangeTime){
 		    latestChangeDirectionTime = Time.time;
@@ -37,11 +39,11 @@ public class EnemyController : MonoBehaviour
         //check if player is nearby:
         if(Vector3.Distance(transform.position, player.position) <= minimumDistance){
             //rotate enemy in direction opposite to player:
-            Vector3 lookAwayFromPlayerDirection = transform.position - player.position;
             transform.rotation = Quaternion.Slerp(transform.rotation, Quaternion.LookRotation(lookAwayFromPlayerDirection), rotationalForce * Time.deltaTime);
 
             //move player in direction opposite to player:
-            animalRb.MovePosition(transform.position + moveSpeed * Time.deltaTime * lookAwayFromPlayerDirection); 
+            transform.Translate(moveSpeed * lookAwayFromPlayerDirection * Time.deltaTime);
+            Debug.DrawLine(transform.position, player.position, Color.blue, 2f);
             Debug.Log("Rigidbody Move Position" + Time.time);
         }
         else{
